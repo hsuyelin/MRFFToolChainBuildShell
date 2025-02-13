@@ -12,7 +12,7 @@ jobs:
     name: compile apple and android ffmpeg then deploy
     runs-on: macos-14
     env:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - uses: nttld/setup-ndk@v1
       id: setup-ndk
@@ -26,4 +26,4 @@ jobs:
       run: |
         ./main.sh install -l 'openssl opus' -p ios     
     - name: One Step
-      run: .github/workflows/onestep.sh ffmpeg all
+      run: .github/workflows/onestep.sh ffmpeg ios

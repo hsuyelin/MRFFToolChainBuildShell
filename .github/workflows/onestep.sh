@@ -33,7 +33,7 @@ function init_platform
 function compile_ios_platform
 {
     echo "---do compile ios libs--------------------------------------"
-    ./main.sh compile -p ios -c build -l ${LIB_NAME}
+    ./main.sh compile -c build -p ios -a arm64 -l ${LIB_NAME}
     cd build/product/ios/universal
     zip -ryq $DIST_DIR/${LIB_NAME}-ios-universal-${RELEASE_VERSION}.zip ./*
     
@@ -127,7 +127,14 @@ function main()
         all)
             init_platform ios
             compile_ios_platform
+            init_platform macos
+            compile_macos_platform
+            init_platform tvos
+            compile_tvos_platform
             make_xcfmwk_bundle
+
+            init_platform android
+            compile_android_platform
 
             publish
         ;;

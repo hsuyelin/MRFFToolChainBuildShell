@@ -39,6 +39,7 @@ CFG_FLAGS="$CFG_FLAGS $COMMON_FF_CFG_FLAGS"
 CFG_FLAGS="$CFG_FLAGS $THIRD_CFG_FLAGS"
 
 C_FLAGS="$MR_OTHER_CFLAGS -arch $MR_FF_ARCH"
+LDFLAGS="$C_FLAGS"
 
 echo "----------------------"
 echo "[*] configure"
@@ -82,14 +83,3 @@ make install >/dev/null
 mkdir -p $MR_BUILD_PREFIX/include/libffmpeg
 cp -f config.h $MR_BUILD_PREFIX/include/libffmpeg/
 [ -e config_components.h ] && cp -f config_components.h $MR_BUILD_PREFIX/include/libffmpeg/
-# copy private header for ffmpeg-kit.
-[ -e $MR_BUILD_SOURCE/libavutil/getenv_utf8.h ] && cp -f $MR_BUILD_SOURCE/libavutil/getenv_utf8.h $MR_BUILD_PREFIX/include/libavutil/
-cp -f $MR_BUILD_SOURCE/libavutil/internal.h $MR_BUILD_PREFIX/include/libavutil/
-cp -f $MR_BUILD_SOURCE/libavutil/libm.h $MR_BUILD_PREFIX/include/libavutil/
-[ -e $MR_BUILD_SOURCE/libavutil/attributes_internal.h ] && cp -f $MR_BUILD_SOURCE/libavutil/attributes_internal.h $MR_BUILD_PREFIX/include/libavutil/
-cp -f $MR_BUILD_SOURCE/libavcodec/mathops.h $MR_BUILD_PREFIX/include/libavcodec/
-
-mkdir -p $MR_BUILD_PREFIX/include/libavcodec/x86/
-cp -f $MR_BUILD_SOURCE/libavcodec/x86/mathops.h $MR_BUILD_PREFIX/include/libavcodec/x86/
-mkdir -p $MR_BUILD_PREFIX/include/libavutil/x86/
-cp -f $MR_BUILD_SOURCE/libavutil/x86/asm.h $MR_BUILD_PREFIX/include/libavutil/x86/

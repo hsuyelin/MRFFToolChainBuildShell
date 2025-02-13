@@ -26,4 +26,4 @@ jobs:
       run: |
         ./main.sh install -l 'openssl opus' -p ios     
     - name: One Step
-      run: .github/workflows/onestep.sh ffmpeg ios
+      run: .github/workflows/onestep.sh ffmpeg all

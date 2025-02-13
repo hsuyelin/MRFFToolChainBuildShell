@@ -127,14 +127,7 @@ function main()
         all)
             init_platform ios
             compile_ios_platform
-            init_platform macos
-            compile_macos_platform
-            init_platform tvos
-            compile_tvos_platform
             make_xcfmwk_bundle
-
-            init_platform android
-            compile_android_platform
 
             publish
         ;;

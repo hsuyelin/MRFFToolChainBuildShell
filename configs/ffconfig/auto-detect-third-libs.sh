@@ -63,7 +63,7 @@ pkg-config --libs mp3lame --silence-errors >/dev/null && enable_mp3lame=1
 if [[ $enable_lame ]]; then
     echo "[✅] --enable-libmp3lame : $(pkg-config --modversion lame)"
     THIRD_CFG_FLAGS="$THIRD_CFG_FLAGS --enable-gpl --enable-libmp3lame"
-elif [[ $enable_mp3lame ]];then
+elif [[ $enable_mp3lame ]]; then
     echo "[✅] --enable-libmp3lame : $(pkg-config --modversion mp3lame)"
     THIRD_CFG_FLAGS="$THIRD_CFG_FLAGS --enable-gpl --enable-libmp3lame"
 else

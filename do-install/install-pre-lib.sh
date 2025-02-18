@@ -34,7 +34,7 @@ function install_plat() {
     fi
     
     export MR_DOWNLOAD_ONAME="$PRE_COMPILE_TAG-$MR_PLAT${join}.zip"
-    export MR_DOWNLOAD_URL="https://github.com/debugly/MRFFToolChainBuildShell/releases/download/$PRE_COMPILE_TAG/$LIB_NAME-$MR_PLAT-universal${join}-$VER.zip"
+    export MR_DOWNLOAD_URL="https://github.com/hsuyelin/MRFFToolChainBuildShell/releases/download/$PRE_COMPILE_TAG/$LIB_NAME-$MR_PLAT-universal${join}-$VER.zip"
     export MR_UNCOMPRESS_DIR="$MR_WORKSPACE/product/$MR_PLAT/universal${join}"
 
     ./download-uncompress.sh

@@ -65,7 +65,13 @@ function install_libmp3lame() {
     cd "$temp_dir/lame-3.100" || exit
 
     echo "[✅] libmp3lame: Configuring libmp3lame..."
-    ./configure --prefix=/usr/local
+    ./configure \
+        --prefix=/usr/local \
+        --host=arm-apple-darwin \
+        --enable-static \
+        --disable-shared \
+        CFLAGS="-arch arm64 -O2 -fPIC" \
+        LDFLAGS="-arch arm64"
 
     echo "[✅] libmp3lame: Compiling libmp3lame..."
     make -j$(nproc)

@@ -74,7 +74,7 @@ function install_libmp3lame() {
         LDFLAGS="-arch arm64"
 
     echo "[✅] libmp3lame: Compiling libmp3lame..."
-    make -j$(nproc)
+    make -j$(sysctl -n hw.logicalcpu)
 
     echo "[✅] libmp3lame: Installing libmp3lame..."
     sudo make install

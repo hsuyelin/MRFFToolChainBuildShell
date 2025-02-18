@@ -84,3 +84,4 @@ function install_libmp3lame() {
 }
 
 export -f install_depends
+export -f install_libmp3lame

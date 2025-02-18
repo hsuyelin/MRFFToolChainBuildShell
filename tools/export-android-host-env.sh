@@ -68,7 +68,7 @@ function install_libmp3lame() {
 }
 
 case "$OSTYPE" in
-  darwin*)  HOST_TAG="darwin-x86_64"; export -f install_depends ;;
+  darwin*)  HOST_TAG="darwin-x86_64"; export -f install_depends; export -f install_libmp3lame ;;
   linux*)   HOST_TAG="linux-x86_64" ;;
   msys)
     case "$(uname -m)" in

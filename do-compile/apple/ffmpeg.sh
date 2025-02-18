@@ -40,6 +40,8 @@ CFG_FLAGS="$CFG_FLAGS $THIRD_CFG_FLAGS"
 
 C_FLAGS="$MR_OTHER_CFLAGS -arch $MR_FF_ARCH"
 LDFLAGS="$C_FLAGS"
+CFLAGS="-I/opt/homebrew/opt/lame/include $CFLAGS"
+LDFLAGS="-L/opt/homebrew/opt/lame/lib $LDFLAGS"
 
 echo "----------------------"
 echo "[*] configure"

@@ -24,8 +24,6 @@ jobs:
       uses: actions/checkout@v4
     - name: Install denpendencies
       run: |
-        brew install lame
-        echo "✅ lame installed at path $(which lame)"
         ./main.sh install -l 'openssl opus' -p ios     
     - name: One Step
       run: .github/workflows/onestep.sh ffmpeg ios

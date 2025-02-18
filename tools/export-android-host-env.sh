@@ -19,12 +19,52 @@
 
 function install_depends() {
     local name="$1"
-    local r=$(brew list | grep "$name")
+
+    if [[ "$name" == "libmp3lame" ]]; then
+        install_libmp3lame
+        return
+    fi
+
+    local r=$(brew list | grep "^$name$")
     if [[ -z $r ]]; then
         echo "will use brew install ${name}."
         brew install "$name"
     fi
+
     echo "[✅] ${name}: $(eval $name --version)"
+}
+
+function install_libmp3lame() {
+    local url="https://nchc.dl.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz"
+    local temp_dir=$(mktemp -d)
+    local tar_file="$temp_dir/lame.tar.gz"
+    local old_dir=$(pwd)
+
+    echo "[✅] libmp3lame: Downloading libmp3lame..."
+    curl -L "$url" -o "$tar_file"
+
+    echo "[✅] libmp3lame: Extracting libmp3lame..."
+    tar -xzf "$tar_file" -C "$temp_dir"
+
+    cd "$temp_dir/lame-3.100" || exit
+
+    echo "[✅] libmp3lame: Configuring libmp3lame..."
+    ./configure --prefix=/usr/local
+
+    echo "[✅] libmp3lame: Compiling libmp3lame..."
+    make -j$(nproc)
+
+    echo "[✅] libmp3lame: Installing libmp3lame..."
+    sudo make install
+
+    echo "[✅] libmp3lame: Cleaning up..."
+    rm -rf "$temp_dir"
+
+    export PATH="/usr/local/bin:$PATH"
+    echo "[✅] libmp3lame: Setting up environment variables..."
+
+    cd "$old_dir"
+    echo "[✅] libmp3lame installation complete!"
 }
 
 case "$OSTYPE" in

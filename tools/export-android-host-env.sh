@@ -29,88 +29,35 @@ function install_depends() {
     if [[ -z $r ]]; then
         echo "will use brew install ${name}."
         brew install "$name"
+        if [[ "$name" == "lame" ]]; then
+            configure_libmp3lame
+        fi
     fi
 
     echo "[✅] ${name}: $(eval $name --version)"
 }
 
-function install_libmp3lame() {
-    local url="https://nchc.dl.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz"
-    local temp_dir=$(mktemp -d)
-    local tar_file="$temp_dir/lame.tar.gz"
-    local old_dir=$(pwd)
-    
-    echo "[✅] libmp3lame: Downloading libmp3lame..."
-    curl -L "$url" -o "$tar_file" || { echo "[❌] Download failed!"; exit 1; }
-    
-    echo "[✅] libmp3lame: Extracting libmp3lame..."
-    tar -xzf "$tar_file" -C "$temp_dir" || { echo "[❌] Extraction failed!"; exit 1; }
-    
-    cd "$temp_dir/lame-3.100" || exit
-
-    echo "[✅] libmp3lame: Configuring libmp3lame..."
-    ./configure \
-        --prefix=/usr/local \
-        --host=arm-apple-darwin \
-        --enable-static \
-        --disable-shared \
-        CFLAGS="-arch arm64 -O2 -fPIC" \
-        LDFLAGS="-arch arm64" || { echo "[❌] Configuration failed!"; exit 1; }
-    
-    echo "[✅] libmp3lame: Compiling libmp3lame..."
-    make -j$(sysctl -n hw.logicalcpu) || { echo "[❌] Compilation failed!"; exit 1; }
-    
-    echo "[✅] libmp3lame: Installing libmp3lame..."
-    sudo make install || { echo "[❌] Installation failed!"; exit 1; }
-
-    local pkgconfig_dir="/usr/local/lib/pkgconfig"
-    sudo mkdir -p "$pkgconfig_dir"
-    sudo tee "$pkgconfig_dir/mp3lame.pc" > /dev/null <<EOF
-prefix=/usr/local
+function configure_libmp3lame() {
+    cat <<EOF > /opt/homebrew/lib/pkgconfig/mp3lame.pc
+prefix=/opt/homebrew
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
-includedir=\${prefix}/include
+includedir=\${exec_prefix}/include
 
-Name: mp3lame
-Description: LAME MP3 encoding library
+Name: LAME
+Description: LAME MP3 Encoder
 Version: 3.100
-Libs: -L\${libdir} -lmp3lame
 Cflags: -I\${includedir}
+Libs: -L\${libdir} -lmp3lame
 EOF
-    echo "[✅] libmp3lame: Created mp3lame.pc"
-
-    export PATH="/usr/local/bin:$PATH"
-    export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
-
-    echo "[✅] libmp3lame: Setting up environment variables..."
-
-    echo "[ℹ️] Checking installation..."
-    lame_version=$(lame --version 2>/dev/null)
-    if [[ $? -eq 0 ]]; then
-        echo "[✅] LAME version: $lame_version"
-    else
-        echo "[❌] LAME command not found!"
-        exit 1
-    fi
-
-    echo "[ℹ️] Checking pkg-config..."
-    pkg-config --libs mp3lame
-    if [[ $? -eq 0 ]]; then
-        echo "[✅] pkg-config found mp3lame!"
-    else
-        echo "[❌] pkg-config could not find mp3lame!"
-        exit 1
-    fi
-
-    echo "[✅] libmp3lame: Cleaning up..."
-    rm -rf "$temp_dir"
-
-    cd "$old_dir"
-    echo "[🎉] libmp3lame installation complete!"
+    grep -q "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" ~/.bashrc || \
+    echo "export PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig:\$PKG_CONFIG_PATH" >> ~/.bashrc
+    source ~/.bashrc
+    pkg-config --cflags --libs mp3lame && echo "[✅] LAME: installed and configured successfully!" || echo "Configuration failed."
 }
 
 case "$OSTYPE" in
-  darwin*)  HOST_TAG="darwin-x86_64"; export -f install_depends; export -f install_libmp3lame ;;
+  darwin*)  HOST_TAG="darwin-x86_64"; export -f install_depends; export -f configure_libmp3lame ;;
   linux*)   HOST_TAG="linux-x86_64" ;;
   msys)
     case "$(uname -m)" in

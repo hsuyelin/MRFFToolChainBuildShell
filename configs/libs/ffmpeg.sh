@@ -20,7 +20,7 @@
 
 export LIB_NAME='ffmpeg'
 export LIPO_LIBS="libavcodec libavformat libavutil libswresample"
-export LIB_DEPENDS_BIN="nasm pkg-config libmp3lame"
+export LIB_DEPENDS_BIN="nasm pkg-config lame"
 
 export GIT_LOCAL_REPO=extra/ffmpeg
 export REPO_DIR=ffmpeg

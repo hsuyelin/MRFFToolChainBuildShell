@@ -65,8 +65,8 @@ function install_libmp3lame() {
     sudo make install
 
     # Keep the lame source code in the temporary directory for FFmpeg use
-    mkdir -p /opt/local/lame
-    cp -R lame-3.99.5 /opt/local/lame
+    sudo mkdir -p /opt/local/lame
+    sudo cp -R lame-3.99.5 /opt/local/lame
 
     # Return to the original directory and remove the temporary directory
     popd > /dev/null

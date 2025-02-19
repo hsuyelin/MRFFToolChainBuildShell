@@ -72,7 +72,7 @@ function install_libmp3lame() {
     # Configure, compile, and install for iOS (arm64)
     ./configure \
         --prefix=/usr/local \
-        --host=arm-apple-darwin \
+        --host=aarch64-apple-darwin \
         --enable-static \
         --disable-shared \
         CFLAGS="-arch arm64 -O2 -fPIC -miphoneos-version-min=11.0" \

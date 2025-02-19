@@ -49,7 +49,7 @@ CFG_FLAGS="$CFG_FLAGS $THIRD_CFG_FLAGS"
 EXTRA_LDFLAGS=
 C_FLAGS="$C_FLAGS $MR_OTHER_CFLAGS"
 LDFLAGS="$C_FLAGS $EXTRA_LDFLAGS"
-EXTRA_LIBS="-lpthread -lm"
+EXTRA_LIBS="-lpthread"
 
 
 echo "----------------------"

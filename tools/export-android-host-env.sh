@@ -64,12 +64,18 @@ function install_libmp3lame() {
     make -j$(sysctl -n hw.ncpu)
     sudo make install
 
-    # Keep the lame source code in the temporary directory for FFmpeg use
-    sudo mkdir -p /opt/local/lame
-    sudo cp -R lame-3.99.5 /opt/local/lame
-
     # Return to the original directory and remove the temporary directory
     popd > /dev/null
+
+    # Keep the lame source code in the temporary directory for FFmpeg use
+    sudo mkdir -p /opt/local/lame
+    if [ -d "$tmp_dir/lame-3.99.5" ]; then
+        sudo cp -R "$tmp_dir/lame-3.99.5" /opt/local/lame
+    else
+        echo "Error: lame-3.99.5 directory does not exist."
+    fi
+
+    # Remove the temporary directory
     rm -rf "$tmp_dir"
 }
 

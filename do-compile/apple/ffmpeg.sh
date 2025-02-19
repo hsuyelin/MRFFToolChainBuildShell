@@ -68,9 +68,9 @@ else
         $CFG_FLAGS \
         --cc="$MR_CC" \
         --as="perl ${MR_GAS_PERL} -arch ${MR_ARCH} -- $MR_CC" \
-        --extra-cflags="$C_FLAGS" \
+        --extra-cflags="-I/usr/local/include $C_FLAGS" \
         --extra-cxxflags="$C_FLAGS" \
-        --extra-ldflags="$LDFLAGS" \
+        --extra-ldflags="-L/usr/local/lib $LDFLAGS" \
         --extra-libs="$EXTRA_LIBS"
 fi
 

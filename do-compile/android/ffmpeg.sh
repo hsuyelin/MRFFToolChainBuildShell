@@ -85,9 +85,9 @@ else
         --nm=${MR_NM} \
         --strip=${MR_STRIP} \
         --ranlib=${MR_RANLIB} \
-        --extra-cflags="$C_FLAGS" \
+        --extra-cflags="-I/usr/local/include $C_FLAGS" \
         --extra-cxxflags="$C_FLAGS" \
-        --extra-ldflags="$LDFLAGS" \
+        --extra-ldflags="-L/usr/local/lib $LDFLAGS" \
         --pkg-config=${MR_PKG_CONFIG_EXECUTABLE} \
         --extra-libs="$EXTRA_LIBS"
 fi

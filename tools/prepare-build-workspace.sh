@@ -23,6 +23,8 @@ export MR_NINJA_EXECUTABLE=$(which ninja)
 export MR_MESON_EXECUTABLE=$(which meson)
 # Nasm is used for libdav1d and libx264 building. Needs to be installed
 export MR_NASM_EXECUTABLE=$(which nasm)
+# lame is used for ffmpeg mp3 encode. Needs to be installed
+export MR_LIBMP3LAME_EXECUTABLE=$(which lame)
 # A utility to properly pick shared libraries by FFmpeg's configure script. Needs to be installed
 export MR_PKG_CONFIG_EXECUTABLE=$(which pkg-config)
 #on intel compile arm64 harfbuzz can't find pkg-config

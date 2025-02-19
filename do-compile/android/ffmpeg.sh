@@ -49,8 +49,6 @@ CFG_FLAGS="$CFG_FLAGS $THIRD_CFG_FLAGS"
 EXTRA_LDFLAGS=
 C_FLAGS="$C_FLAGS $MR_OTHER_CFLAGS"
 LDFLAGS="$C_FLAGS $EXTRA_LDFLAGS"
-CFLAGS="-I/opt/homebrew/opt/lame/include $CFLAGS"
-LDFLAGS="-L/opt/homebrew/opt/lame/lib $LDFLAGS"
 
 
 echo "----------------------"

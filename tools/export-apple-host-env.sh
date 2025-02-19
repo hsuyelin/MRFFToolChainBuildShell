@@ -36,36 +36,79 @@ export DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
 function install_depends() {
     local name="$1"
 
+    if [[ "$name" == "libmp3lame" ]]; then
+        echo "will use sourcecode install ${name}."
+        install_libmp3lame
+        configure_libmp3lame
+        echo "[✅] ${name}: $(eval $name --version)"
+        return
+    fi
+
     local r=$(brew list | grep "^$name$")
     if [[ -z $r ]]; then
         echo "will use brew install ${name}."
         brew install "$name"
-        if [[ "$name" == "lame" ]]; then
-            configure_libmp3lame
-        fi
     fi
 
     echo "[✅] ${name}: $(eval $name --version)"
 }
 
+# Install libmp3lame 3.99.5
+function install_libmp3lame() {
+    # Create a temporary directory
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+
+    # Change to the temporary directory
+    pushd "$tmp_dir" > /dev/null || exit 1
+
+    # Install dependencies
+    brew install automake autoconf libtool nasm
+
+    # Download LAME 3.99.5 source code
+    curl -LO https://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+    tar -xvzf lame-3.99.5.tar.gz
+    cd lame-3.99.5 || exit 1
+
+    # Configure, compile, and install
+    ./configure \
+        --prefix=/usr/local \
+        --host=arm-apple-darwin \
+        --enable-static \
+        --disable-shared \
+        CFLAGS="-arch arm64 -O2 -fPIC" \
+        LDFLAGS="-arch arm64"
+    make -j$(sysctl -n hw.ncpu)
+    sudo make install
+
+    # Return to the original directory and remove the temporary directory
+    popd > /dev/null
+    rm -rf "$tmp_dir"
+}
+
+# Configure mp3lame.pc for pkg-config
 function configure_libmp3lame() {
-    cat <<EOF > /opt/homebrew/lib/pkgconfig/mp3lame.pc
-prefix=/opt/homebrew
+    # Ensure the pkg-config directory exists
+    sudo mkdir -p /usr/local/lib/pkgconfig
+
+    # Create the mp3lame.pc file
+    sudo tee /usr/local/lib/pkgconfig/mp3lame.pc > /dev/null <<EOF
+prefix=/usr/local
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
-includedir=\${exec_prefix}/include
+includedir=\${prefix}/include
 
-Name: LAME
-Description: LAME MP3 Encoder
-Version: 3.100
-Cflags: -I\${includedir}
+Name: mp3lame
+Description: LAME MP3 encoder library
+Version: 3.99.5
 Libs: -L\${libdir} -lmp3lame
+Cflags: -I\${includedir}
 EOF
-    grep -q "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" ~/.bashrc || \
-    echo "export PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig:\$PKG_CONFIG_PATH" >> ~/.bashrc
-    source ~/.bashrc
-    pkg-config --cflags --libs mp3lame && echo "[✅] LAME: installed and configured successfully!" || echo "Configuration failed."
+
+    # Configure PKG_CONFIG_PATH globally using /etc/paths.d/
+    echo "/usr/local/lib/pkgconfig" | sudo tee /etc/paths.d/mp3lame > /dev/null
 }
 
 export -f install_depends
+export -f install_libmp3lame
 export -f configure_libmp3lame

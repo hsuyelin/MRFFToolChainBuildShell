@@ -89,19 +89,11 @@ function install_libmp3lame() {
 
 # Configure mp3lame.pc for pkg-config
 function configure_libmp3lame() {
-    # Detect Homebrew prefix (Apple Silicon vs. Intel)
-    if [[ -d /opt/homebrew ]]; then
-        BREW_PREFIX="/opt/homebrew"
-    else
-        BREW_PREFIX="/usr/local"
-    fi
+    # Ensure the pkg-config directory exists in /usr/local
+    sudo mkdir -p /usr/local/lib/pkgconfig
 
-
-    # Ensure the pkg-config directory exists
-    sudo mkdir -p "$BREW_PREFIX/lib/pkgconfig"
-
-    # Create the mp3lame.pc file
-    sudo tee "$BREW_PREFIX/lib/pkgconfig/mp3lame.pc" > /dev/null <<EOF
+    # Create the mp3lame.pc file for pkg-config
+    sudo tee /usr/local/lib/pkgconfig/mp3lame.pc > /dev/null <<EOF
 prefix=/usr/local
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
@@ -114,11 +106,14 @@ Libs: -L\${libdir} -lmp3lame
 Cflags: -I\${includedir}
 EOF
 
+    # Make sure pkg-config can find mp3lame
+    export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+
     pkg_config_result=$(pkg-config --modversion mp3lame 2>/dev/null)
     if [ $? -eq 0 ]; then
-        echo "[✅]mp3lame: pkg-config successfully found mp3lame version: $pkg_config_result"
+        echo "[✅] libmp3lame: pkg-config successfully found mp3lame version: $pkg_config_result"
     else
-        echo "[❌]mp3lame: pkg-config could not find mp3lame"
+        echo "[❌] libmp3lame: pkg-config could not find mp3lame"
     fi
 }
 

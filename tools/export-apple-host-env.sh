@@ -80,6 +80,9 @@ function install_libmp3lame() {
     make -j$(sysctl -n hw.ncpu)
     sudo make install
 
+    echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc
+    source ~/.bashrc
+
     # Return to the original directory and remove the temporary directory
     popd > /dev/null
 

@@ -53,7 +53,7 @@ function install_depends() {
     echo "[✅] ${name}: $(eval $name --version)"
 }
 
-# Install libmp3lame 3.99.5
+# Install libmp3lame 3.99.5 for iOS and keep lame source for FFmpeg
 function install_libmp3lame() {
     # Create a temporary directory
     local tmp_dir
@@ -62,9 +62,6 @@ function install_libmp3lame() {
     # Change to the temporary directory
     pushd "$tmp_dir" > /dev/null || exit 1
 
-    # Install dependencies
-    brew install automake autoconf libtool nasm
-
     # Download LAME 3.99.5 source code
     curl -LO https://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
     tar -xvzf lame-3.99.5.tar.gz
@@ -72,30 +69,33 @@ function install_libmp3lame() {
     curl -LO 'https://git.savannah.gnu.org/cgit/config.git/plain/config.sub'
     curl -LO 'https://git.savannah.gnu.org/cgit/config.git/plain/config.guess'
 
-    # Configure, compile, and install
+    # Configure, compile, and install for iOS (arm64)
     ./configure \
-        --prefix=/usr/local \
-        --host=arm-apple-darwin \
+        --prefix=/opt/local \
         --enable-static \
         --disable-shared \
-        CFLAGS="-arch arm64 -O2 -fPIC" \
-        LDFLAGS="-arch arm64"
+        CFLAGS="-arch arm64 -O2 -fPIC -miphoneos-version-min=11.0" \
+        LDFLAGS="-arch arm64 -miphoneos-version-min=11.0"
     make -j$(sysctl -n hw.ncpu)
     sudo make install
+
+    # Keep the lame source code in the temporary directory for FFmpeg use
+    mkdir -p /opt/local/lame
+    cp -R lame-3.99.5 /opt/local/lame
 
     # Return to the original directory and remove the temporary directory
     popd > /dev/null
     rm -rf "$tmp_dir"
 }
 
-# Configure mp3lame.pc for pkg-config
+# Configure mp3lame.pc for pkg-config to point to /opt/local
 function configure_libmp3lame() {
-    # Ensure the pkg-config directory exists in /usr/local
-    sudo mkdir -p /usr/local/lib/pkgconfig
+    # Ensure the pkg-config directory exists in /opt/local
+    sudo mkdir -p /opt/local/lib/pkgconfig
 
     # Create the mp3lame.pc file for pkg-config
-    sudo tee /usr/local/lib/pkgconfig/mp3lame.pc > /dev/null <<EOF
-prefix=/usr/local
+    sudo tee /opt/local/lib/pkgconfig/mp3lame.pc > /dev/null <<EOF
+prefix=/opt/local
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
 includedir=\${prefix}/include
@@ -108,7 +108,7 @@ Cflags: -I\${includedir}
 EOF
 
     # Make sure pkg-config can find mp3lame
-    export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+    export PKG_CONFIG_PATH="/opt/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 
     pkg_config_result=$(pkg-config --modversion mp3lame 2>/dev/null)
     if [ $? -eq 0 ]; then

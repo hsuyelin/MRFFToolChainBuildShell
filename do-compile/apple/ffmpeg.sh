@@ -38,9 +38,28 @@ CFG_FLAGS=
 CFG_FLAGS="$CFG_FLAGS $COMMON_FF_CFG_FLAGS"
 CFG_FLAGS="$CFG_FLAGS $THIRD_CFG_FLAGS"
 
+# Initialize CFLAGS and LDFLAGS
 C_FLAGS="$MR_OTHER_CFLAGS -arch $MR_FF_ARCH"
 LDFLAGS="$C_FLAGS"
 EXTRA_LIBS="-lpthread"
+
+# Check if libmp3lame is installed and update CFLAGS and LDFLAGS
+LIBMP3LAME_INCLUDE="/opt/local/lame/lame-3.99.5/include"
+LIBMP3LAME_LIB="/opt/local/lame/lame-3.99.5/lib"
+
+if [ -d "$LIBMP3LAME_INCLUDE" ]; then
+    C_FLAGS="$C_FLAGS -I$LIBMP3LAME_INCLUDE"
+    echo "[✅] Added LAME include path to CFLAGS: $LIBMP3LAME_INCLUDE"
+else
+    echo "[❌] LAME include path not found: $LIBMP3LAME_INCLUDE"
+fi
+
+if [ -d "$LIBMP3LAME_LIB" ]; then
+    LDFLAGS="$LDFLAGS -L$LIBMP3LAME_LIB"
+    echo "[✅] Added LAME library path to LDFLAGS: $LIBMP3LAME_LIB"
+else
+    echo "[❌] LAME library path not found: $LIBMP3LAME_LIB"
+fi
 
 echo "----------------------"
 echo "[*] configure"
@@ -68,9 +87,9 @@ else
         $CFG_FLAGS \
         --cc="$MR_CC" \
         --as="perl ${MR_GAS_PERL} -arch ${MR_ARCH} -- $MR_CC" \
-        --extra-cflags="-I/usr/local/include $C_FLAGS" \
+        --extra-cflags="$C_FLAGS" \
         --extra-cxxflags="$C_FLAGS" \
-        --extra-ldflags="-L/usr/local/lib $LDFLAGS" \
+        --extra-ldflags="$LDFLAGS" \
         --extra-libs="$EXTRA_LIBS"
 fi
 

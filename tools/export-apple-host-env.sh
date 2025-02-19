@@ -69,6 +69,8 @@ function install_libmp3lame() {
     curl -LO https://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
     tar -xvzf lame-3.99.5.tar.gz
     cd lame-3.99.5 || exit 1
+    curl -LO 'https://git.savannah.gnu.org/cgit/config.git/plain/config.sub'
+    curl -LO 'https://git.savannah.gnu.org/cgit/config.git/plain/config.guess'
 
     # Configure, compile, and install
     ./configure \

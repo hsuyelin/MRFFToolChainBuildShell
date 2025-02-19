@@ -49,6 +49,7 @@ CFG_FLAGS="$CFG_FLAGS $THIRD_CFG_FLAGS"
 EXTRA_LDFLAGS=
 C_FLAGS="$C_FLAGS $MR_OTHER_CFLAGS"
 LDFLAGS="$C_FLAGS $EXTRA_LDFLAGS"
+EXTRA_LIBS="-lpthread -lm"
 
 
 echo "----------------------"
@@ -87,7 +88,8 @@ else
         --extra-cflags="$C_FLAGS" \
         --extra-cxxflags="$C_FLAGS" \
         --extra-ldflags="$LDFLAGS" \
-        --pkg-config=${MR_PKG_CONFIG_EXECUTABLE}
+        --pkg-config=${MR_PKG_CONFIG_EXECUTABLE} \
+        --extra-libs="$EXTRA_LIBS"
 fi
 
 #----------------------

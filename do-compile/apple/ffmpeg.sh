@@ -40,6 +40,7 @@ CFG_FLAGS="$CFG_FLAGS $THIRD_CFG_FLAGS"
 
 C_FLAGS="$MR_OTHER_CFLAGS -arch $MR_FF_ARCH"
 LDFLAGS="$C_FLAGS"
+EXTRA_LIBS="-lpthread -lm"
 
 echo "----------------------"
 echo "[*] configure"
@@ -69,7 +70,8 @@ else
         --as="perl ${MR_GAS_PERL} -arch ${MR_ARCH} -- $MR_CC" \
         --extra-cflags="$C_FLAGS" \
         --extra-cxxflags="$C_FLAGS" \
-        --extra-ldflags="$LDFLAGS"
+        --extra-ldflags="$LDFLAGS" \
+        --extra-libs="$EXTRA_LIBS"
 fi
 
 #----------------------

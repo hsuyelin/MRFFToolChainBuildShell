@@ -24,7 +24,7 @@ function install_depends() {
         echo "will use sourcecode install ${name}."
         install_libmp3lame
         configure_libmp3lame
-        echo "[✅] ${name}: $(eval $name --version)"
+        echo "[✅] ${name}: $(lame --version)"
         return
     fi
 

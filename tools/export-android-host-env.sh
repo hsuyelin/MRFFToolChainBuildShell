@@ -37,7 +37,7 @@ function install_depends() {
     echo "[✅] ${name}: $(eval $name --version)"
 }
 
-# Install libmp3lame 3.99.5 for iOS and keep lame source for FFmpeg
+# Install libmp3lame 3.100 for iOS and keep lame source for FFmpeg
 function install_libmp3lame() {
     # Create a temporary directory
     local tmp_dir
@@ -46,10 +46,10 @@ function install_libmp3lame() {
     # Change to the temporary directory
     pushd "$tmp_dir" > /dev/null || exit 1
 
-    # Download LAME 3.99.5 source code
-    curl -LO https://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
-    tar -xvzf lame-3.99.5.tar.gz
-    cd lame-3.99.5 || exit 1
+    # Download LAME 3.100 source code
+    curl -LO https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz
+    tar -xvzf lame-3.100.tar.gz
+    cd lame-3.100 || exit 1
     curl -LO 'https://git.savannah.gnu.org/cgit/config.git/plain/config.sub'
     curl -LO 'https://git.savannah.gnu.org/cgit/config.git/plain/config.guess'
 
@@ -59,8 +59,8 @@ function install_libmp3lame() {
         --host=aarch64-apple-darwin \
         --enable-static \
         --disable-shared \
-        CFLAGS="-arch arm64 -O2 -fPIC -miphoneos-version-min=11.0" \
-        LDFLAGS="-arch arm64 -miphoneos-version-min=11.0"
+        CFLAGS="-arch arm64 -O2 -fPIC -miphoneos-version-min=13.0" \
+        LDFLAGS="-arch arm64 -miphoneos-version-min=13.0"
     make -j$(sysctl -n hw.ncpu)
     sudo make install
 
@@ -72,10 +72,10 @@ function install_libmp3lame() {
 
     # Keep the lame source code in the temporary directory for FFmpeg use
     sudo mkdir -p /opt/local/lame
-    if [ -d "$tmp_dir/lame-3.99.5" ]; then
-        sudo cp -R "$tmp_dir/lame-3.99.5" /opt/local/lame
+    if [ -d "$tmp_dir/lame-3.100" ]; then
+        sudo cp -R "$tmp_dir/lame-3.100" /opt/local/lame
     else
-        echo "Error: lame-3.99.5 directory does not exist."
+        echo "Error: lame-3.100 directory does not exist."
     fi
 
     # Remove the temporary directory
@@ -96,7 +96,7 @@ includedir=\${prefix}/include
 
 Name: mp3lame
 Description: LAME MP3 encoder library
-Version: 3.99.5
+Version: 3.100
 Libs: -L\${libdir} -lmp3lame
 Cflags: -I\${includedir}
 EOF

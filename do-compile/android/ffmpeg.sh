@@ -52,8 +52,8 @@ LDFLAGS="$C_FLAGS $EXTRA_LDFLAGS"
 EXTRA_LIBS="-lpthread"
 
 # Check if libmp3lame is installed and update CFLAGS and LDFLAGS
-LIBMP3LAME_INCLUDE="/opt/local/lame/lame-3.99.5/include"
-LIBMP3LAME_LIB="/opt/local/lame/lame-3.99.5/lib"
+LIBMP3LAME_INCLUDE="/opt/local/lame/lame-3.100/include"
+LIBMP3LAME_LIB="/opt/local/lame/lame-3.100/lib"
 
 if [ -d "$LIBMP3LAME_INCLUDE" ]; then
     C_FLAGS="$C_FLAGS -I$LIBMP3LAME_INCLUDE"

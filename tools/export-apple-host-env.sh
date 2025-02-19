@@ -71,7 +71,7 @@ function install_libmp3lame() {
 
     # Configure, compile, and install for iOS (arm64)
     ./configure \
-        --prefix=/opt/local \
+        --prefix=/usr/local \
         --host=arm-apple-darwin \
         --enable-static \
         --disable-shared \
@@ -95,14 +95,14 @@ function install_libmp3lame() {
     rm -rf "$tmp_dir"
 }
 
-# Configure mp3lame.pc for pkg-config to point to /opt/local
+# Configure mp3lame.pc for pkg-config to point to /usr/local
 function configure_libmp3lame() {
-    # Ensure the pkg-config directory exists in /opt/local
-    sudo mkdir -p /opt/local/lib/pkgconfig
+    # Ensure the pkg-config directory exists in /usr/local
+    sudo mkdir -p /usr/local/lib/pkgconfig
 
     # Create the mp3lame.pc file for pkg-config
-    sudo tee /opt/local/lib/pkgconfig/mp3lame.pc > /dev/null <<EOF
-prefix=/opt/local
+    sudo tee /usr/local/lib/pkgconfig/mp3lame.pc > /dev/null <<EOF
+prefix=/usr/local
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
 includedir=\${prefix}/include
@@ -115,7 +115,7 @@ Cflags: -I\${includedir}
 EOF
 
     # Make sure pkg-config can find mp3lame
-    export PKG_CONFIG_PATH="/opt/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+    export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 
     pkg_config_result=$(pkg-config --modversion mp3lame 2>/dev/null)
     if [ $? -eq 0 ]; then

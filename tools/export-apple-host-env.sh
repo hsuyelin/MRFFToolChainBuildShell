@@ -73,7 +73,6 @@ function install_libmp3lame() {
     # Configure, compile, and install
     ./configure \
         --prefix=/usr/local \
-        --host=arm-apple-darwin \
         --enable-static \
         --disable-shared \
         CFLAGS="-arch arm64 -O2 -fPIC" \
